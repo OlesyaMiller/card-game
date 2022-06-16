@@ -1,22 +1,34 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 const Cards = () => {
-    const [data, setData] = useState({ cards: [] });
-    
+
+    const [deck_id, getDeckId] = useState();
 
     useEffect(() => {
-        // const fetchDeck = () => {
-            fetch(`http://deckofcardsapi.com/api/deck/new/shuffle/?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH`)
-            .then(res => res.json())
-            .then(res => setData(res))
-        // }
-    }, []);
+        const fetchData = async() => {
+            const result = await axios(`http://deckofcardsapi.com/api/deck/new/shuffle/?cards=AS,2S,KS,AD,2D,KD,AC,2C,KC,AH,2H,KH`);
+            getDeckId(result.deck_id);
+        };
+        fetchData();
+    });
+
+    const [deck, getDeck] = useState();    
+
+    useEffect(() => {
+        const fetchData = async() => {
+            const result = await axios(`http://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=12`);
+            getDeck(result);
+        };
+        fetchData();
+    });
 
     return (
         <div>Cards component
-            {console.log(data)}
+            {console.log('deck',deck)}
         </div>
     );
+
 }
  
 export default Cards;
